@@ -1,7 +1,7 @@
 $(document).ready(function() {
     // Initialize expenses array and check local storage
     window.expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    
+
     if (expenses.length === 0) {
         console.log("Empty expenses array");
     } else {
@@ -26,7 +26,7 @@ $(document).ready(function() {
 
         expenses.push(newExpense);
         saveExpenses();
-        
+
         alert('Expense added successfully!');
         this.reset();
 
@@ -35,120 +35,121 @@ $(document).ready(function() {
         }
     });
 
-    // Render all expenses grouped by date
+    // Render all expenses
     const renderExpenses = () => {
         let groupedExpenses = {};
 
         // Group expenses by date
-        expenses.forEach(expense => {
+        expenses.forEach((expense, index) => {
             if (!groupedExpenses[expense.date]) {
                 groupedExpenses[expense.date] = [];
             }
-            groupedExpenses[expense.date].push(expense);
+            groupedExpenses[expense.date].push({ ...expense, index });
         });
 
         let $expenseRecords = $('#expense-records');
         $expenseRecords.empty();
 
-        for (let date in groupedExpenses) {
+        // Sort dates in descending order
+        let sortedDates = Object.keys(groupedExpenses).sort((a, b) => new Date(b) - new Date(a));
+
+        sortedDates.forEach(date => {
+            let dailyTotal = groupedExpenses[date].reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
+
             let $dateSection = $(`
                 <div class="card mt-3">
-                    <div class="card-header">
-                        ${date}
+                    <div class="card-header d-flex justify-content-between">
+                        <span>${date}</span>
+                        <span>Total: RM${dailyTotal.toFixed(2)}</span>
                     </div>
                     <ul class="list-group list-group-flush"></ul>
                 </div>
             `);
 
             groupedExpenses[date].forEach(expense => {
+                let iconClass = getIconClass(expense.category);
+                let actionButtons = window.location.pathname.includes('delete.html')
+                    ? `<button class="btn btn-danger btn-sm" onclick="deleteExpense(${expense.index})">Delete</button>`
+                    : window.location.pathname.includes('edit.html')
+                    ? `<button class="btn btn-primary btn-sm" onclick="showEditForm(${expense.index})">Edit</button>`
+                    : '';
+
                 $dateSection.find('.list-group').append(`
-                    <li class="list-group-item">
-                        ${expense.description}: $${expense.amount} - ${expense.category}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="${iconClass}"></i>
+                            ${expense.description}
+                        </div>
+                        <div>
+                            <span>RM${expense.amount}</span>
+                            ${actionButtons}
+                        </div>
                     </li>
                 `);
             });
 
             $expenseRecords.append($dateSection);
+        });
+    };
+
+    const getIconClass = (category) => {
+        switch(category.toLowerCase()) {
+            case 'entertainment':
+                return 'fas fa-film';
+            case 'food':
+                return 'fas fa-utensils';
+            case 'travel':
+                return 'fas fa-plane';
+            case 'shopping':
+                return 'fas fa-shopping-cart';
+            case 'bills':
+                return 'fas fa-file-invoice-dollar';
+            case 'other':
+            default:
+                return 'fas fa-tags';
         }
     };
 
-    // Render edit list
-    const renderEditList = () => {
-        $('#expense-list').empty();
-        expenses.forEach((expense, index) => {
-            $('#expense-list').append(`
-                <div class="card mt-2">
-                    <div class="card-body">
-                        <h5 class="card-title">${expense.description}</h5>
-                        <p class="card-text">$${expense.amount} on ${expense.date} - ${expense.category}</p>
-                        <button class="btn btn-primary edit-btn" data-index="${index}">Edit</button>
-                    </div>
-                </div>
-            `);
-        });
-
-        $('.edit-btn').on('click', function() {
-            let index = $(this).data('index');
-            let expense = expenses[index];
-            
-            let newAmount = prompt("Enter new amount:", expense.amount);
-            let newDate = prompt("Enter new date:", expense.date);
-            let newCategory = prompt("Enter new category:", expense.category);
-            let newDescription = prompt("Enter new description:", expense.description);
-
-            if (newAmount && newDate && newCategory && newDescription) {
-                expenses[index] = { amount: newAmount, date: newDate, category: newCategory, description: newDescription };
-                saveExpenses();
-                alert("Expense updated successfully!");
-                renderEditList();
-            }
-        });
+    // Delete expense functionality
+    window.deleteExpense = function(index) {
+        expenses.splice(index, 1);
+        saveExpenses();
+        renderExpenses();
     };
 
-    // Render delete list
-    const renderDeleteList = () => {
-        $('#delete-expense-list').empty();
-        expenses.forEach((expense, index) => {
-            $('#delete-expense-list').append(`
-                <div class="card mt-2">
-                    <div class="card-body">
-                        <h5 class="card-title">${expense.description}</h5>
-                        <p class="card-text">$${expense.amount} on ${expense.date} - ${expense.category}</p>
-                        <button class="btn btn-danger delete-btn" data-index="${index}">Delete</button>
-                    </div>
-                </div>
-            `);
-        });
+    // Show edit form and populate fields
+    window.showEditForm = function(index) {
+        let expense = expenses[index];
+        $('#edit-amount').val(expense.amount);
+        $('#edit-date').val(expense.date);
+        $('#edit-category').val(expense.category);
+        $('#edit-description').val(expense.description);
+        $('#edit-expense-form').data('index', index).removeClass('d-none');
+        $('html, body').animate({ scrollTop: $('#edit-expense-form').offset().top }, 1000);
+    };
 
-        $('.delete-btn').on('click', function() {
-            let index = $(this).data('index');
-            expenses.splice(index, 1);
+    // Edit expense functionality
+    $('#edit-expense-form').on('submit', function(e) {
+        e.preventDefault();
+        let index = $(this).data('index');
+        let amount = $('#edit-amount').val();
+        let date = $('#edit-date').val();
+        let category = $('#edit-category').val();
+        let description = $('#edit-description').val();
+
+        if (amount && date && category && description) {
+            expenses[index] = { amount, date, category, description };
             saveExpenses();
-            alert("Expense deleted successfully!");
-            renderDeleteList();
-        });
-    };
-
-    // Render summary
-    const renderSummary = () => {
-        let total = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
-        $('#expense-summary').html(`<p>Total Expenses: $${total.toFixed(2)}</p>`);
-    };
+            alert('Expense updated successfully!');
+            $('#edit-expense-form').addClass('d-none');
+            renderExpenses();
+        } else {
+            alert('All fields are required.');
+        }
+    });
 
     // Run functions based on the current page
-    if (window.location.pathname.includes('index.html')) {
+    if (window.location.pathname.includes('index.html') || window.location.pathname.includes('delete.html') || window.location.pathname.includes('edit.html')) {
         renderExpenses();
-    }
-
-    if (window.location.pathname.includes('edit.html')) {
-        renderEditList();
-    }
-
-    if (window.location.pathname.includes('delete.html')) {
-        renderDeleteList();
-    }
-
-    if (window.location.pathname.includes('summary.html')) {
-        renderSummary();
     }
 });
