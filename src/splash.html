@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Welcome to Expense Tracker</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
+        body {
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f8f9fa;
+            background-color: #ff6600;
+            font-family: 'Times New Roman', Times, serif;
+            color: white;
         }
-        .welcome-message {
+        .splash-container {
             text-align: center;
+        }
+        .splash-message {
+            font-size: 2rem;
+            margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
-<div class="welcome-message">
-    <h1>Welcome to the Expense Tracker</h1>
+<div class="splash-container">
+    <h1 class="splash-message">Welcome to the Expense Tracker</h1>
+    <p>Loading...</p>
 </div>
 <script>
     setTimeout(function() {
-        window.location.href = "index.html";
+        window.location.href = "login.html";
     }, 3000);
 </script>
 </body>
