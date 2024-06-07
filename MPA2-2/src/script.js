@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    // Initialize expenses array and check local storage
     let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
 
     if (expenses.length === 0) {
@@ -32,9 +33,8 @@ $(document).ready(function() {
         alert('Expense added successfully!');
         this.reset();
 
-        if (window.location.pathname.includes('index.html')) {
-            renderExpenses();
-        }
+        // Redirect to index.html
+        window.location.href = 'index.html';
     });
 
     // Render all expenses

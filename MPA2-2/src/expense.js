@@ -1,12 +1,15 @@
 $(document).ready(function() {
     // Initialize expenses array and check local storage
-    window.expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
 
     if (expenses.length === 0) {
         console.log("Empty expenses array");
     } else {
         console.log("Loaded expenses:", expenses);
     }
+
+    // Expose expenses to other scripts
+    window.expenses = expenses;
 
     // Save to local storage function
     window.saveExpenses = function() {
@@ -17,7 +20,7 @@ $(document).ready(function() {
     $('#add-expense-form').on('submit', function(e) {
         e.preventDefault();
 
-        let amount = $('#amount').val();
+        let amount = parseFloat($('#amount').val()).toFixed(2);
         let date = $('#date').val();
         let category = $('#category').val();
         let description = $('#description').val();
@@ -81,7 +84,7 @@ $(document).ready(function() {
                             ${expense.description}
                         </div>
                         <div>
-                            <span>RM${expense.amount}</span>
+                            <span>RM${parseFloat(expense.amount).toFixed(2)}</span>
                             ${actionButtons}
                         </div>
                     </li>
@@ -98,12 +101,12 @@ $(document).ready(function() {
                 return 'fas fa-film';
             case 'food':
                 return 'fas fa-utensils';
-            case 'travel':
+            case 'transport':
                 return 'fas fa-plane';
             case 'shopping':
                 return 'fas fa-shopping-cart';
-            case 'bills':
-                return 'fas fa-file-invoice-dollar';
+            case 'health':
+                return 'fas fa-heartbeat';
             case 'other':
             default:
                 return 'fas fa-tags';
@@ -120,7 +123,7 @@ $(document).ready(function() {
     // Show edit form and populate fields
     window.showEditForm = function(index) {
         let expense = expenses[index];
-        $('#edit-amount').val(expense.amount);
+        $('#edit-amount').val(parseFloat(expense.amount).toFixed(2));
         $('#edit-date').val(expense.date);
         $('#edit-category').val(expense.category);
         $('#edit-description').val(expense.description);
@@ -132,7 +135,7 @@ $(document).ready(function() {
     $('#edit-expense-form').on('submit', function(e) {
         e.preventDefault();
         let index = $(this).data('index');
-        let amount = $('#edit-amount').val();
+        let amount = parseFloat($('#edit-amount').val()).toFixed(2);
         let date = $('#edit-date').val();
         let category = $('#edit-category').val();
         let description = $('#edit-description').val();

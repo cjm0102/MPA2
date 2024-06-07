@@ -125,12 +125,26 @@
                 `);
             });
         };
-
         const getIconClass = (category) => {
             switch(category.toLowerCase()) {
                 case 'entertainment':
                     return 'fas fa-film';
                 case 'food':
                     return 'fas fa-utensils';
-                case 'travel':
+                case 'transport':
+                    return 'fas fa-plane';
+                case 'shopping':
+                    return 'fas fa-shopping-cart';
+                case 'health':
+                    return 'fas fa-heartbeat';
+                case 'other':
+                default:
+                    return 'fas fa-tags';
+            }
+        };
 
+        renderExpenses();
+    });
+</script>
+</body>
+</html>

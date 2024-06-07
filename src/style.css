@@ -1,8 +1,9 @@
 /* Global styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family:'Times New Roman', Times, serif;
     margin: 0;
     padding: 0;
+   
     
 }
 
@@ -35,19 +36,19 @@ body.index {
 
 .index-title {
     text-align: center;
-    color: orange;
+    color: ff6600;
     font-size: 2rem;
     margin-bottom: 30px;
 }
 
 .btn-primary {
-    background-color: orange;
-    border-color: orange;
+    background-color: #ff6600;
+    border-color: #ff6600;
 }
 
 .btn-primary:hover {
-    background-color: darkorange;
-    border-color: darkorange;
+    background-color: #ff6600;
+    border-color: #ff6600;
 }
 
 /* Add page */
@@ -57,13 +58,13 @@ body.add {
 
 .add-title {
     text-align: center;
-    color: orange;
+    color: #ff6600;
     font-size: 2rem;
     margin-bottom: 30px;
 }
 
 .form-group label {
-    color: orange;
+    color: #ff6600;
     font-weight: bold;
 }
 
@@ -75,8 +76,8 @@ body.add {
 
 /* Hover effect */
 .btn-primary:hover {
-    background-color: darkorange;
-    border-color: darkorange;
+    background-color: #ff6600;
+    border-color: #ff6600;
 }
 
 
@@ -131,4 +132,9 @@ body.summary {
     height: auto;
 }
 
-/* Additional styles for specific elements if needed */
+body.register {
+    background-color: #f4c593;
+}
+body.login {
+    background-color: #f4c593;
+}

@@ -30,7 +30,7 @@
         .container {
             max-width: 800px;
             padding: 20px;
-            background-color:rgba(255, 255, 255, 0.297);
+            background-color: rgba(255, 255, 255, 0.297);
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
@@ -91,32 +91,8 @@
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="script.js"></script>
-<script src="expense.js"></script>
-<script>
-    $(document).ready(function() {
-        // Add expense functionality
-        $('#add-expense-form').on('submit', function(e) {
-            e.preventDefault();
-
-            let amount = parseFloat($('#amount').val()).toFixed(2) || '0.00';
-            let date = $('#date').val();
-            let category = $('#category').val();
-            let description = $('#description').val();
-
-            let newExpense = { amount, date, category, description };
-
-            expenses.push(newExpense);
-            saveExpenses();
-
-            alert('Expense added successfully!');
-            this.reset();
-
-            if (window.location.pathname.includes('index.html')) {
-                renderExpenses();
-            }
-        });
-    });
-</script>
+<script src="script.js"></script> <!-- Ensure only one script file is referenced -->
+<!--<script src="expense.js"></script>--> <!-- Commented out to avoid duplication -->
+<!-- Remove inline script to avoid multiple event bindings -->
 </body>
 </html>
